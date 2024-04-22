@@ -1,4 +1,4 @@
-FROM open jdk:17
+FROM open jdk:17-alphine
 WORKDIR /heroku-app
 COPY heroku-demo /heroku-app
 EXPOSE 8080
