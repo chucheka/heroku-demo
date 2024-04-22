@@ -1,61 +1,61 @@
 pipeline {
-
-agent
     agent any
-
-
-    environment {
-
-        NEW_BUILD_VERSION = '1.2.345'
+    
+    tools {
+        maven 'maven' // Ensure 'maven' matches the Maven installation name in Jenkins
     }
-
-
-    tools{
-        maven
-    }
-
+    
     stages {
-
-        stage('Fetch code') {
-                  steps{
-                      git branch: 'develop', url:'https://github.com/chucheka/heroku-demo.git'
-                  }
-                }
-
-
-        stage("build") {
-
+        stage('Checkout') {
             steps {
-                sh 'mvn clean package'
-                echo 'I am building my Java Application'
+                echo "Checking out code"
+                git branch: 'develop', url: 'https://github.com/chucheka/heroku-demo.git'
+                echo "Current working directory: ${pwd()}"
             }
         }
-        stage("test") {
-
+        
+        stage('Build and Test') {
             steps {
-                echo 'Now testing the Java application...'
+                echo "Building and testing"
+                sh 'mvn clean package' // Verify Maven is available and configured correctly
+                sh 'ls -l target'
             }
         }
-        stage("deploy") {
+        
+        stage('Code Analysis') {
             steps {
-                echo 'deploying the application...'
-
+                script {
+                    withSonarQubeEnv('sonarsql') {
+                        echo "Running SonarQube analysis"
+                        sh 'mvn install sonar:sonar' // Ensure SonarQube analysis is properly configured
+                    }
                 }
             }
-
-
-    }
-
-    post {
-
-        always {
-            // execute logics after execution, build status does not matter.
         }
-        success {
-            // execute logics after execution, only after a SUCCESSFUL build.
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo "Building Docker image"
+                    dir('/var/lib/jenkins/workspace/heroku-demo') {
+                      sh 'docker build -t ujusophy/heroku-demo .'
+                    }
+                }
+            }
         }
-        failure {
-            // execute logics after execution, only after a build FAILS.
+        
+        stage('Push Image') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'ujusophydocker', variable: 'dockerhubpwd')]) {
+                        echo "Logging into Docker Hub"
+                        sh "docker login -u ujusophy -p ${dockerhubpwd}"
+                        
+                        echo "Tagging and pushing Docker image"
+                        sh "docker push ujusophy/heroku-demo"
+                    }
+                }
+            }
         }
     }
 }
