@@ -13,6 +13,8 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
+
+    - name: Checkout successful message
       run: echo "Checkout successful"
 
     - name: Set up JDK 17
