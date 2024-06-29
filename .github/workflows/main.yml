@@ -28,7 +28,11 @@ jobs:
       run: mvn clean install
 
     - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      with:
+        projectBaseDir: .
+        args: >
+          -Dsonar.projectKey=heroku-demo
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_CRED }}
         SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
-      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=heroku-demo -Dsonar.projectName='heroku-demo'
