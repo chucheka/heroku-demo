@@ -22,21 +22,6 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'temurin' # Using Eclipse Temurin (OpenJDK distribution)
-
+        
     - name: Build with Maven
       run: mvn clean install
-
-    - name: Test connectivity to SonarQube server
-      run: curl -v ${{ secrets.SONAR_URL }}
-           echo "Connection successful"
-
-    - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@master
-      with:
-        projectBaseDir: .
-        args: >
-          -Dsonar.projectKey=heroku-demo
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_CRED }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
