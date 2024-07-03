@@ -1,0 +1,9 @@
+ECR_REGISTRY
+590183822156.dkr.ecr.us-east-1.amazonaws.com/us-ecr
+
+ECR_REPOSITORY
+us-ecr
+
+IMAGE_TAG
+Latest
+
