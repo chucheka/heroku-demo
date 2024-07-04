@@ -63,7 +63,7 @@ jobs:
         envs: PRIVATE_SSH_KEY,ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION
         script: |
           sudo apt update
-          sudo apt install aws cli -y
+          sudo apt install awscli -y
           sudo $(aws ecr get-login -no-include-email -region us-east-1);
           sudo docker stop heroku-demo || true
           sudo docker rm heroku-demo || true
