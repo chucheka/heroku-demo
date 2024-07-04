@@ -50,15 +50,14 @@ jobs:
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     - name: Deploy docker image to EC2
-      envs:
+      env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: us-ecr
         IMAGE_TAG: ${{ github.sha }}
         AWS_REGION: us-east-1
-        SERVER_PUBIC_IP: 18.205.244.148
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ SERVER_PUBLIC_IP }}
+        host: 18.205.244.148
         username: ubuntu
         key: ${{ github.sha }}
         envs: PRIVATE_SSH_KEY,ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION
