@@ -61,9 +61,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.PRIVATE_SSH_KEY }}
         envs: PRIVATE_SSH_KEY,ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION
-        scripts:
+        script:
           sudo apt update
-          sudo apt install docker.io -y
-          sudo apt install aws cli -y
           sudo docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           sudo docker run -d --name heroku-demo -p 80:8080 $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
