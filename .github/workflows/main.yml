@@ -59,7 +59,7 @@ jobs:
       with:
         host: 18.205.244.148
         username: ubuntu
-        key: ${{ github.sha }}
+        key: ${{ secrets.PRIVATE_SSH_KEY }}
         envs: PRIVATE_SSH_KEY,ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION
         scripts:
           sudo apt update
