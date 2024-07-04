@@ -48,3 +48,22 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      - name: Deploy docker image to EC2
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: us-ecr
+          IMAGE_TAG: ${{ github.sha }}
+          AWS_REGION: us-east-1
+          SERVER_PUBIC_IP
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_PUBLIC_IP }}
+          username: ubuntu
+          key: ${{ github.sha }}
+          envs: PRIVATE_SSH_KEY,ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION
+          scripts:
+            sudo apt update
+            sudo apt install docker.io -y
+            sudo apt install aws cli -y
+            sudo docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            sudo docker run -d --name heroku-demo -p 80:8080 $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
