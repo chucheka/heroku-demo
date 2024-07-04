@@ -55,12 +55,12 @@ jobs:
         ECR_REPOSITORY: us-ecr
         IMAGE_TAG: ${{ github.sha }}
         AWS_REGION: us-east-1
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v0.1.3
       with:
-        host: 18.205.244.148
+        host: ${{ secrets.EC2_HOST }}
         username: ubuntu
         key: ${{ secrets.PRIVATE_SSH_KEY }}
         envs: PRIVATE_SSH_KEY,ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION
-        script:
+        script: |
           sudo docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           sudo docker run -d --name heroku-demo -p 80:8080 $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
