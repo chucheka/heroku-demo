@@ -54,10 +54,10 @@ jobs:
           ECR_REPOSITORY: us-ecr
           IMAGE_TAG: ${{ github.sha }}
           AWS_REGION: us-east-1
-          SERVER_PUBIC_IP
+          SERVER_PUBIC_IP: 18.205.244.148
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SERVER_PUBLIC_IP }}
+          host: ${{ SERVER_PUBLIC_IP }}
           username: ubuntu
           key: ${{ github.sha }}
           envs: PRIVATE_SSH_KEY,ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION
